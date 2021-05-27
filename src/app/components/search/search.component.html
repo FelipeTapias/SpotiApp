@@ -4,11 +4,13 @@
     </div>
 </div>
 
-<div class="card-columns m-5">
-    <div class="card" *ngFor="let artista of artistas">
-        <img [src]="artista.images | noimage" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="card-title"> {{ artista.name }} </h5>
-        </div>
-    </div>
+<div *ngIf="search" class="row mt-5 animated fadeIn text-center">
+  <div class="col">
+    <i class="fas fa-search fa-8x"></i><br>
+    <span><b>Resultados...</b></span>
+  </div>
 </div>
+
+<app-loading class="m-5" *ngIf="loading"></app-loading>
+
+<app-tarjetas *ngIf="!loading" [items]="artistas"></app-tarjetas>

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { SpotifyService } from 'src/app/services/spotify.service';
 
 @Component({
@@ -7,19 +8,31 @@ import { SpotifyService } from 'src/app/services/spotify.service';
   styles: [
   ]
 })
-export class SearchComponent  {
+export class SearchComponent implements OnDestroy {
 
+  private buscarSubscrition: Subscription;
   artistas: any[] = [];
+  search: boolean;
+  loading: boolean;
 
-  constructor(private spotify: SpotifyService) { }
+  constructor(private spotify: SpotifyService) {
+    this.search = true;
+  }
 
   buscar(termino: string) {
-    console.log(termino);
-    this.spotify.gerArtista(termino)
+    this.loading = true;
+    this.buscarSubscrition =  this.spotify.getArtistas(termino)
         .subscribe( (data: any) => {
-          console.log(data);
           this.artistas = data;
-        })
+          this.search = false;
+          this.loading = false;
+        });
+  }
+
+  ngOnDestroy() {
+    if(this.buscarSubscrition) {
+      this.buscarSubscrition.unsubscribe();
+    }
   }
 
 }
